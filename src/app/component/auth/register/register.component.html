@@ -1,0 +1,92 @@
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+
+
+<div class="register-wrapper bg-gradient-to-br from-purple-600 via-pink-400 to-orange-400 min-h-screen flex items-center justify-center p-4">
+  <div class="register-box bg-white p-8 rounded-2xl shadow-lg w-full max-w-4xl">
+    <h2 class="register-title text-3xl font-bold text-center mb-6">Register</h2>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      <!-- LEFT SIDE -->
+      <div class="space-y-4">
+        <div>
+          <label class="register-label">Username</label>
+          <input formControlName="username" type="text" class="register-input w-full p-2 border rounded" />
+        </div>
+        <div>
+          <label class="register-label">Password</label>
+          <input formControlName="password" type="password" class="register-input w-full p-2 border rounded" />
+        </div>
+        <div>
+          <label class="register-label">First Name</label>
+          <input formControlName="fname" type="text" class="register-input w-full p-2 border rounded" />
+        </div>
+        <div>
+          <label class="register-label">Last Name</label>
+          <input formControlName="lname" type="text" class="register-input w-full p-2 border rounded" />
+        </div>
+        <label class="form-label">วันเกิด</label>
+        <input
+          type="date"
+          formControlName="birthday"
+          name="birthday"
+          [max]="maxDate"
+          class="form-input"
+        />
+        
+      </div>
+
+      <!-- RIGHT SIDE -->
+      <div class="space-y-4">
+        <!-- Profile Picture -->
+        <div>
+          <label class="register-label">Profile Picture</label>
+          <input
+            type="file"
+            (change)="onFileSelected($event)"
+            accept="image/*"
+            class="register-input w-full p-2 border rounded"
+          />
+
+          <div *ngIf="previewImage" class="mt-2">
+            <img 
+              [src]="previewImage"
+              alt="Preview"
+              class="rounded-full object-cover border shadow"
+              style="width: 128px; height: 128px; max-width: 100%;"
+            />
+          </div>
+          
+        </div>
+
+        <!-- Gender -->
+        <div>
+          <label class="register-label">Gender</label>
+          <div class="flex gap-4 mt-1">
+            <label><input type="radio" value="male" formControlName="gender" /> Male</label>
+            <label><input type="radio" value="female" formControlName="gender" /> Female</label>
+            <label><input type="radio" value="other" formControlName="gender" /> Other</label>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label class="register-label">Description</label>
+          <textarea formControlName="description" rows="3" class="register-input w-full p-2 border rounded resize-none"></textarea>
+        </div>
+      </div>
+
+      <!-- Submit button -->
+      <div class="col-span-1 md:col-span-2 text-center">
+        <button type="submit"
+                class="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white px-6 py-2 rounded-full font-semibold hover:shadow-lg transition">
+          Register
+        </button>
+        <p class="mt-4 text-sm text-gray-600">
+          Already have an account?
+          <a routerLink="/login" class="register-link text-purple-600 hover:underline">Login</a>
+        </p>
+      </div>
+    </form>
+  </div>
+</div>

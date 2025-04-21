@@ -1,0 +1,241 @@
+.container {
+    padding: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 20px;
+  }
+  
+  .styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .styled-table thead {
+    background-color: #3498db;
+    color: #ffffff;
+  }
+  
+  .styled-table th,
+  .styled-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .styled-table tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .pagination {
+    text-align: center;
+  }
+  
+  .pagination button {
+    background-color: #3498db;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    margin: 0 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+
+  button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #2980b9;
+  }
+
+  /* model */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+  }
+  
+  .modal-content {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    min-width: 300px;
+    max-width: 500px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    font-size: 16px; /* ✅ สำคัญ: อย่าให้เป็น 0 */
+    color: #333;      /* ✅ ให้แน่ใจว่าเป็นสีที่มองเห็นได้ */
+  }
+  
+  
+  .close-btn {
+    margin-top: 15px;
+    background-color: #e74c3c;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  input, textarea {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+  
+
+  .modal-content {
+    text-align: center;
+  }
+  .modal-content h2 {
+    color: red;
+  }
+  .modal-content button {
+    margin: 10px;
+  }
+
+  
+  
+  .top-right {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px;
+  }
+  
+  .logout-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .logout-btn:hover {
+    background-color: #c0392b;
+  }
+
+
+  .modal-split {
+    width: 90%;
+    max-width: 800px;
+  }
+  
+  .modal-title {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 20px;
+  }
+  
+  .modal-columns {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  
+  .modal-section {
+    flex: 1;
+    background-color: #f8f8f8;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+  }
+  
+  .modal-section h3 {
+    text-align: center;
+    color: #3498db;
+  }
+  
+  .modal-section ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .modal-section li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .delete-btn {
+    background-color: #e74c3c;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    padding: 4px 8px;
+    cursor: pointer;
+  }
+  
+  .delete-btn:hover {
+    background-color: #c0392b;
+  }
+  
+
+  .checkbox-grid {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    max-height: 200px;
+    overflow-y: auto;
+    gap: 5px;
+  }
+  
+  .checkbox-grid label {
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    padding: 4px 10px;
+    font-size: 14px;
+    display: inline-block;
+    width: auto;
+  }
+  
+  .modal-columns-split {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .modal-section {
+    background: #fafafa;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+  }
+  
+  

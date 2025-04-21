@@ -1,0 +1,187 @@
+<div class="container">
+    <div class="top-right">
+      <button *ngIf="isLoggedIn" class="logout-btn" (click)="logout()">ออกจากระบบ</button>
+    </div>
+  
+    <h1 class="title">รายชื่อผู้ใช้งาน</h1>
+    <div class="mb-4 flex items-center gap-2">
+      <input type="text" [(ngModel)]="searchKeyword" placeholder="ค้นหา Username / ชื่อ / นามสกุล"
+             class="border p-2 rounded w-64" />
+      <button (click)="searchAccounts()"
+              class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+        🔍 ค้นหา
+      </button>
+      <button (click)="loadAccountspadding()"
+              class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">
+        🔄 รีเซ็ต
+      </button>
+
+      <button (click)="exportToCSV()">Export CSV</button>
+<button (click)="exportToExcel()">Export Excel</button>
+
+    </div>
+    
+    
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Password</th>
+          <th>ชื่อ</th>
+          <th>นามสกุล</th>
+          <th>คำอธิบาย</th>
+          <th>เพศ</th>
+          <th>วันเกิด</th>
+          <th>sport</th>
+          <th>career</th>
+          <th>action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let account of Accountlist">
+          <td>{{ account.idaccount }}</td>
+          <td>{{ account.username }}</td>
+          <td>{{ account.password }}</td>
+          <td>{{ account.fname }}</td>
+          <td>{{ account.lname }}</td>
+          <td>{{ account.description }}</td>
+          <td>{{ account.gender }}</td>
+          <td>{{ account.birthday }}</td>
+          <td><button (click)="getSport(account)">ดู Sport</button></td>
+          <td><button (click)="getCareer(account)">ดู Career</button></td>
+          <td colspan="2">
+            <button (click)="viewProfile(account.idaccount)">ดูโปรไฟล์</button>
+          </td>
+        </tr>
+      </tbody>
+      
+    </table>
+  
+    <div class="pagination flex justify-center items-center gap-4 mt-4">
+      <button
+        class="bg-gray-300 px-4 py-2 rounded"
+        (click)="previousPage()"
+        [disabled]="paging.index <= 1">
+        ก่อนหน้า
+      </button>
+    
+      <span>หน้า {{ paging.index }} / {{ totalPages }}</span>
+    
+      <button
+        class="bg-blue-500 text-white px-4 py-2 rounded"
+        (click)="nextPage()"
+       
+        [disabled]="paging.index >= totalPages">
+        ถัดไป
+      </button>
+    </div>
+    
+    <!-- Modal สำหรับแสดงข้อมูล -->
+    <div class="modal-overlay" *ngIf="showModal">
+      <div class="modal-content modal-split">
+        <h2 class="modal-title">ข้อมูลผู้ใช้</h2>
+  
+        <div class="modal-columns modal-columns-split">
+          <!-- SPORT LIST -->
+          <div class="modal-section" *ngIf="modalType === 'sport'">
+            <h3>🏅 กีฬา (Sport)</h3>
+            <ul>
+              <li *ngFor="let item of modalData">
+                {{ item.name }}
+                <button class="delete-btn" (click)="deleteItem(item, 'sport' , item.id)">🗑</button>
+              </li>
+            </ul>
+          </div>
+          <div class="modal-section" *ngIf="modalType === 'sport'">
+            <h4>➕ เพิ่มกีฬาใหม่</h4>
+            <div class="checkbox-grid">
+              <label *ngFor="let sport of allSports">
+                <ng-container *ngIf="hasNotItem(sport)">
+                  <input type="checkbox" (change)="onSelectToAdd(sport, 'sport', $event)" /> {{ sport }}
+                </ng-container>
+              </label>
+            </div>
+            <button (click)="submitAddSelected('sport')">เพิ่มกีฬา</button>
+          </div>
+  
+          <!-- CAREER LIST -->
+          <div class="modal-section" *ngIf="modalType === 'career'">
+            <h3>💼 อาชีพ (Career)</h3>
+            <ul>
+              <li *ngFor="let item of modalData">
+                {{ item.name }}
+                <button class="delete-btn" (click)="deleteItem(item, 'career' , item.id)">🗑</button>
+              </li>
+            </ul>
+          </div>
+          <div class="modal-section" *ngIf="modalType === 'career'">
+            <h4>➕ เพิ่มอาชีพใหม่</h4>
+            <div class="checkbox-grid">
+              <label *ngFor="let career of allCareers">
+                <ng-container *ngIf="hasNotItem(career)">
+                  <input type="checkbox" (change)="onSelectToAdd(career, 'career', $event)" /> {{ career }}
+                </ng-container>
+              </label>
+            </div>
+            <button (click)="submitAddSelected('career')">เพิ่มอาชีพ</button>
+          </div>
+          
+        </div>
+  
+        <button class="close-btn" (click)="closeModal()">ปิด</button>
+      </div>
+    </div>
+  
+    <!-- Modal แก้ไขข้อมูล Account -->
+    <div class="modal-overlay" *ngIf="showEditModal">
+      <div class="modal-content">
+        <h2>แก้ไขข้อมูลผู้ใช้</h2>
+        <form *ngIf="editAccount" (ngSubmit)="submitEdit()" #f="ngForm">
+          <label>ชื่อ</label>
+          <input [(ngModel)]="editAccount.fname" name="fname" required />
+  
+          <label>นามสกุล</label>
+          <input [(ngModel)]="editAccount.lname" name="lname" required />
+  
+          <label>Password</label>
+          <input [(ngModel)]="editAccount.password" name="password" required type="password" />
+  
+          <label>คำอธิบาย</label>
+          <textarea [(ngModel)]="editAccount.description" name="description"></textarea>
+
+          
+            <!-- <label class="register-label">New Profile Picture</label>
+            <input
+              type="file"
+              (change)="/viewProfile"
+              accept="image/*"
+              class="register-input"
+            />
+
+            <img *ngIf="editAccount.pathpicture"
+     [src]="editAccount.pathpicture"
+     
+     alt="รูปโปรไฟล์"
+     width="60"
+     height="60"
+     style="border-radius: 50%;" />
+          
+  
+          <br /> -->
+          <button type="submit">บันทึก</button>
+          <button class="close-btn" (click)="closeEditModal()" type="button">ยกเลิก</button>
+        </form>
+      </div>
+    </div>
+  
+    <!-- Modal ยืนยันการลบ -->
+    <div class="modal-overlay" *ngIf="showDeleteModal">
+      <div class="modal-content">
+        <h2>⚠️ ยืนยันการลบ</h2>
+        <p>คุณต้องการลบผู้ใช้นี้จริงหรือไม่?</p>
+        <button (click)="deleteAccount()">ยืนยัน</button>
+        <button (click)="cancelDelete()">ยกเลิก</button>
+      </div>
+    </div>
+  </div>

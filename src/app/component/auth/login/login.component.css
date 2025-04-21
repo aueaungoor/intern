@@ -1,0 +1,136 @@
+/* ✅ พื้นหลังไล่สีม่วง → ชมพู → ส้ม และจัดให้อยู่กลางจอ */
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to bottom right, #7e22ce, #ec4899, #f97316);
+}
+
+/* ✅ กล่องฟอร์มตรงกลาง */
+.login-box {
+  max-width: 400px;
+  width: 100%;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+/* ✅ หัวข้อใหญ่ */
+.login-title {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: #1f2937;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+/* ✅ กล่อง input และ label */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.login-label {
+  font-weight: 600;
+  color: #374151;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.login-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  transition: border 0.2s;
+}
+
+.login-input:focus {
+  outline: none;
+  border-color: #9333ea;
+  box-shadow: 0 0 0 2px rgba(147, 51, 234, 0.2);
+}
+
+/* ✅ ปุ่ม Login */
+.login-button-wrapper {
+  text-align: center;
+}
+
+.login-button {
+  width: 100%;
+  background: linear-gradient(to right, #9333ea, #f97316);
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border: none;
+  border-radius: 9999px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.login-button:hover {
+  opacity: 0.9;
+}
+
+/* ✅ Footer ลิงก์สมัครสมาชิก */
+.login-footer {
+  text-align: center;
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 1rem;
+}
+
+.login-link {
+  color: #7c3aed;
+  font-weight: 600;
+  text-decoration: none;
+  margin-left: 0.25rem;
+}
+
+.login-link:hover {
+  text-decoration: underline;
+}
+
+/* ✅ Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* ✅ กล่อง Modal */
+.modal-content {
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  min-width: 300px;
+  max-width: 500px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* ✅ ปุ่มปิด Modal */
+.close-btn {
+  margin-top: 15px;
+  background-color: #e74c3c;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.close-btn:hover {
+  background-color: #c0392b;
+}
