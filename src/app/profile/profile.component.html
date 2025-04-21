@@ -17,10 +17,11 @@
       <!-- Profile Image -->
       <div class="profile-image-wrapper">
         <img
-  [src]="account.pathpicture ? account.pathpicture : picdefault"
+  [src]="account?.data?.pathpicture ? account.data.pathpicture : picdefault"
   alt="โปรไฟล์"
   class="profile-image"
 />
+
 
         <label class="change-image-btn">
           📷 เปลี่ยนรูป
@@ -33,14 +34,14 @@
         
         <div>
           <label class="form-label">Username</label>
-          <input type="text" [(ngModel)]="account.username" name="username" required class="form-input" />
+          <input type="text" [(ngModel)]="account.data.username" name="username" required class="form-input" />
         </div>
   
         <div class="password-wrapper">
             <label class="form-label">Password</label>
             <input
               [type]="showPassword ? 'text' : 'password'"
-              [(ngModel)]="account.password"
+              [(ngModel)]="account.data.password"
               name="password"
               required
               class="form-input pr-10"
@@ -53,25 +54,26 @@
   
         <div>
           <label class="form-label">ชื่อ</label>
-          <input [(ngModel)]="account.fname" name="fname" required class="form-input" />
+          <input [(ngModel)]="account.data.fname" name="fname" required class="form-input" />
         </div>
   
         <div>
           <label class="form-label">นามสกุล</label>
-          <input [(ngModel)]="account.lname" name="lname" required class="form-input" />
+          <input [(ngModel)]="account.data.lname" name="lname" required class="form-input" />
         </div>
   
         <div>
           <label class="form-label">เพศ</label>
-          <select [(ngModel)]="account.gender" name="gender" class="form-input">
+          <select [(ngModel)]="account.data.gender" name="gender" class="form-input">
             <option value="male">Male</option>
             <option value="female">Female</option>
+            <option value="female">other</option>
           </select>
         </div>
   
         <div>
           <label class="form-label">คำอธิบาย</label>
-          <textarea [(ngModel)]="account.description" name="description" class="form-input h-24"></textarea>
+          <textarea [(ngModel)]="account.data.description" name="description" class="form-input h-24"></textarea>
         </div>
   
         <div class="form-submit">

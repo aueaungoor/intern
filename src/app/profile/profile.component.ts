@@ -20,18 +20,21 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
     const userId = this.route.snapshot.paramMap.get('id');
-    this.http.get<Account>(`http://localhost:8080/accounts/${userId}`).subscribe({
+    this.http.get<AccountResponse>(`http://localhost:8080/accounts/${userId}`).subscribe({
       next: (res) => {
-        if(res.pathpicture)
+        this.account = res;
+        if(res.data.pathpicture)
           {
             this.http.get('http://localhost:8080/accounts/base64' , {
-              params: {filename: res.pathpicture.toString()},
+              params: {filename: res.data.pathpicture.toString()},
               responseType:'text'
             }).subscribe(base64 => {
             
               if (this.account) {
-                this.account.pathpicture = 'data:image/png;base64,' + base64;
+                this.account.data.pathpicture = 'data:image/png;base64,' + base64;
               }
+
+              
 
             })
           }
@@ -42,7 +45,7 @@ export class ProfileComponent implements OnInit {
             }).subscribe(base64 => {
             
               if (this.account) {
-                this.account.pathpicture = 'data:image/png;base64,' + base64;
+                this.account.data.pathpicture = 'data:image/png;base64,' + base64;
 
                 
               }
@@ -50,9 +53,7 @@ export class ProfileComponent implements OnInit {
     
             })
           }
-        
-        this.account = res
-        console.log(res);
+        console.log("account -> {}",this.account);
       
       },
       error: () => alert('ดึงข้อมูลไ่ม่สำเร็จ')
@@ -69,7 +70,7 @@ export class ProfileComponent implements OnInit {
       formData.append('newfile', file); // ต้องตรงกับชื่อใน @RequestParam("newfile")
   
       // ✅ เรียก API เพื่ออัปโหลดรูป
-      this.http.put(`http://localhost:8080/accounts/editpic/${this.account.idaccount}`, formData, {
+      this.http.put(`http://localhost:8080/accounts/editpic/${this.account.data.idaccount}`, formData, {
         responseType: 'text' as 'json'
       }).subscribe(
         res => {
@@ -95,7 +96,7 @@ export class ProfileComponent implements OnInit {
 
   deleteAccount(): void {
     if (confirm("คุณแน่ใจหรือไม่ว่าต้องการลบบัญชีนี้?")) {
-      this.http.delete(`http://localhost:8080/accounts/${this.account.idaccount}`, { responseType: 'text' })
+      this.http.delete(`http://localhost:8080/accounts/${this.account.data.idaccount}`, { responseType: 'text' })
         .subscribe({
           next: () => {
             alert("✅ ลบบัญชีสำเร็จ");
@@ -109,7 +110,7 @@ export class ProfileComponent implements OnInit {
   
 
   updateProfile() {
-    this.http.put(`http://localhost:8080/accounts/editaccount/${this.account.idaccount}`, this.account, {
+    this.http.put(`http://localhost:8080/accounts/editaccount/${this.account.data.idaccount}`, this.account.data, {
       responseType: 'text' as 'json'  // 👈 บอก Angular ว่ารับเป็น text แต่ยังใช้เป็น json response ได้
     }).subscribe(
       res => {
@@ -142,8 +143,9 @@ goToMainPage() {
 
 
 
-interface Account {
-  idaccount: number;
+interface AccountResponse {
+  data:{
+    idaccount: number;
   username: string;
   password: string;
   fname: string;
@@ -152,4 +154,7 @@ interface Account {
   gender: string;
   birthday: string;
   pathpicture :String;
+  }
+  message:String;
+  
 }

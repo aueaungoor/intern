@@ -1,0 +1,12 @@
+.form-style {
+    max-width: 500px;
+    margin-top: 20px;
+  }
+  
+  input, button {
+    padding: 8px;
+    margin: 8px 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  

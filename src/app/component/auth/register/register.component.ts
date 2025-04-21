@@ -82,6 +82,8 @@ onSubmit(): void {
     // 👇 แนบไฟล์รูปภาพ
     formData.append('file', this.selectedFile);
 
+    console.log("fromdata -> {}",formData);
+
     // 👇 ส่ง multipart ไป backend
     this.http.post('http://localhost:8080/accounts', formData , { responseType: 'text'}).subscribe({
 

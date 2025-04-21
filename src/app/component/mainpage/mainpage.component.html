@@ -4,22 +4,37 @@
     </div>
   
     <h1 class="title">รายชื่อผู้ใช้งาน</h1>
-    <div class="mb-4 flex items-center gap-2">
-      <input type="text" [(ngModel)]="searchKeyword" placeholder="ค้นหา Username / ชื่อ / นามสกุล"
-             class="border p-2 rounded w-64" />
-      <button (click)="searchAccounts()"
-              class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-        🔍 ค้นหา
-      </button>
-      <button (click)="loadAccountspadding()"
-              class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">
-        🔄 รีเซ็ต
-      </button>
+   <!-- ปุ่มค้นหา รีเซ็ต และ Export -->
+<div class="mb-4 flex items-center gap-2 flex-wrap">
+  <input type="text" [(ngModel)]="searchKeyword" placeholder="ค้นหา Username / ชื่อ / นามสกุล"
+         class="border p-2 rounded w-64 shadow-sm" />
 
-      <button (click)="exportToCSV()">Export CSV</button>
-<button (click)="exportToExcel()">Export Excel</button>
+  <button (click)="searchAccounts()"
+          class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 shadow-md flex items-center gap-1">
+    🔍 ค้นหา
+  </button>
 
-    </div>
+  <button (click)="loadAccountspadding()"
+          class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 shadow-md flex items-center gap-1">
+    🔄 รีเซ็ต
+  </button>
+
+  <button (click)="exportToCSV()"
+          class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 shadow-md flex items-center gap-1">
+    📄 Export CSV
+  </button>
+
+  <button (click)="exportToExcel()"
+          class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 shadow-md flex items-center gap-1">
+    📊 Export Excel
+  </button>
+
+  <button (click)="goToZipfilePage()"
+          class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 shadow-md flex items-center gap-1">
+          📦 Zipfile
+  </button>
+</div>
+
     
     
     <table class="styled-table">

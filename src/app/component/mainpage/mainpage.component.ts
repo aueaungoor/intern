@@ -3,8 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import * as XLSX from 'xlsx';
+import * as ExcelJS from 'exceljs';
 import * as FileSaver from 'file-saver';
+import { threadId } from 'worker_threads';
 
 @Component({
   selector: 'app-mainpage',
@@ -92,28 +93,6 @@ onFileSelected(event: Event) {
   
   }
 
-
-//   loadAccountspaddin(): void {
-//     console.log("paging ",this.paging);
-//     console.log(this.paging.index);
-//     this.http.post<pagingRespon>('http://localhost:8080/accounts/accountpaging', this.paging).subscribe({
-//       next: (res) => {
-//         this.Accountlist = res.account ?? []; // ✅ ถ้า undefined/null → ให้เป็น array ว่าง
-//         console.log(res)
-//         this.totalPages = Math.ceil(res.total / this.itemsPerPage);
-        
-    
-        
-      
-//       },
-//       error: (err) => {
-//         console.error("❌ Error loading paged accounts:", err);
-//         this.Accountlist = []; // fallback ป้องกัน slice พัง
-       
-//       }
-//     });
-    
-// }
 
 loadAccountspadding(): void {
   this.http.post<PagingResponse>('http://localhost:8080/accounts/accountpaging', this.paging).subscribe({
@@ -343,6 +322,11 @@ loadAccountspadding(): void {
   viewProfile(id: number) {
     this.router.navigate(['/profile', id]); // ต้อง import Router และ inject ใน constructor
   }
+
+  goToZipfilePage()
+  {
+    this.router.navigate(['/zipfile']);
+  }
   
 
   searchKeyword: string = '';
@@ -380,15 +364,32 @@ searchAccounts(): void {
 
 
 exportToExcel(): void {
-  const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.Accountlist);
-  const wb: XLSX.WorkBook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'SearchResults');
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('ผู้ใช้งาน');
 
-  const excelBuffer: any = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+  // กำหนดคอลัมน์ (ใส่ชื่อ header และ key ตาม field ที่มีใน this.Accountlist)
+  worksheet.columns = [
+    { header: 'ID', key: 'idaccount', width: 10 },
+    { header: 'Username', key: 'username', width: 20 },
+    { header: 'Password', key: 'password', width: 20 },
+    { header: 'ชื่อ', key: 'fname', width: 15 },
+    { header: 'นามสกุล', key: 'lname', width: 15 },
+    { header: 'คำอธิบาย', key: 'description', width: 30 },
+    { header: 'เพศ', key: 'gender', width: 10 },
+    { header: 'วันเกิด', key: 'birthday', width: 15 }
+    // เพิ่ม field อื่น ๆ ได้ตามต้องการ
+  ];
 
-  // Save file
-  const data: Blob = new Blob([excelBuffer], { type: EXCEL_TYPE });
-  FileSaver.saveAs(data, 'SearchResults_' + new Date().getTime() + EXCEL_EXTENSION);
+  // เพิ่มข้อมูลจาก this.Accountlist ลง worksheet
+  worksheet.addRows(this.Accountlist);
+
+  // สร้างไฟล์ .xlsx และดาวน์โหลด
+  workbook.xlsx.writeBuffer().then((buffer: ArrayBuffer) => {
+    const blob = new Blob([buffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    FileSaver.saveAs(blob, 'รายชื่อผู้ใช้งาน_' + new Date().getTime() + '.xlsx');
+  });
 }
 
 exportToCSV(): void {
