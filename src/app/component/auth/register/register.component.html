@@ -1,30 +1,131 @@
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+<link
+  href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+  rel="stylesheet"
+/>
 
-
-<div class="register-wrapper bg-gradient-to-br from-purple-600 via-pink-400 to-orange-400 min-h-screen flex items-center justify-center p-4">
+<div
+  class="register-wrapper bg-gradient-to-br from-purple-600 via-pink-400 to-orange-400 min-h-screen flex items-center justify-center p-4"
+>
   <div class="register-box bg-white p-8 rounded-2xl shadow-lg w-full max-w-4xl">
     <h2 class="register-title text-3xl font-bold text-center mb-6">Register</h2>
-
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-      <!-- LEFT SIDE -->
-      <div class="space-y-4">
-        <div>
-          <label class="register-label">Username</label>
-          <input formControlName="username" type="text" class="register-input w-full p-2 border rounded" />
-        </div>
-        <div>
-          <label class="register-label">Password</label>
-          <input formControlName="password" type="password" class="register-input w-full p-2 border rounded" />
-        </div>
-        <div>
+    <form
+      [formGroup]="registerForm"
+      (ngSubmit)="onSubmit()"
+      class="register-form"
+    >
+      <div class="form-row">
+        <div class="form-group">
           <label class="register-label">First Name</label>
-          <input formControlName="fname" type="text" class="register-input w-full p-2 border rounded" />
+          <input formControlName="fname" type="text" class="register-input" />
         </div>
-        <div>
+        <div class="form-group">
           <label class="register-label">Last Name</label>
-          <input formControlName="lname" type="text" class="register-input w-full p-2 border rounded" />
+          <input formControlName="lname" type="text" class="register-input" />
         </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="register-label">Username</label>
+          <input
+            formControlName="username"
+            type="text"
+            class="register-input"
+            (input)="checkUsername($any($event.target).value)"
+          />
+
+          <small *ngIf="usernameTaken" style="color: red; margin-top: 0.25rem">
+            ชื่อผู้ใช้นี้ถูกใช้งานแล้ว กรุณาเปลี่ยนใหม่
+          </small>
+        </div>
+
+        <div class="form-group password-wrapper">
+          <label class="register-label">Password</label>
+          <div class="password-input-row">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              class="register-input"
+              (input)="onPasswordInput($event)"
+            />
+            <button
+              type="button"
+              class="password-toggle-btn"
+              (click)="toggleShowPassword()"
+              [attr.aria-label]="
+                showPassword ? 'Hide password' : 'Show password'
+              "
+            >
+              <!-- ไอคอนตาเปิด -->
+              <svg
+                *ngIf="!showPassword"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+                class="icon-eye"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                />
+              </svg>
+
+              <!-- ไอคอนตาปิด (เอา SVG ที่คุณให้มาใส่ตรงนี้) -->
+              <svg
+                *ngIf="showPassword"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6 icon-eye-off"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"
+                />
+              </svg>
+            </button>
+          </div>
+          <div class="password-strength-row">
+            <div class="password-strength-bar">
+              <div
+                class="strength-level"
+                [ngClass]="{
+                  weak: passwordStrength <= 1,
+                  fair: passwordStrength === 2,
+                  good: passwordStrength === 3,
+                  strong: passwordStrength >= 4
+                }"
+                [style.width.%]="(passwordStrength / 4) * 100"
+              ></div>
+            </div>
+            <span class="strength-text">
+              {{
+                passwordStrength <= 1
+                  ? "Weak"
+                  : passwordStrength === 2
+                  ? "Fair"
+                  : passwordStrength === 3
+                  ? "Good"
+                  : "Strong"
+              }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ใส่ส่วนอื่น ๆ ตามเดิม ลงมาข้างล่าง -->
+      <div class="form-row full-width">
         <label class="form-label">วันเกิด</label>
         <input
           type="date"
@@ -33,58 +134,40 @@
           [max]="maxDate"
           class="form-input"
         />
-        
       </div>
 
-      <!-- RIGHT SIDE -->
-      <div class="space-y-4">
-        <!-- Profile Picture -->
-        <div>
-          <label class="register-label">Profile Picture</label>
-          <input
-            type="file"
-            (change)="onFileSelected($event)"
-            accept="image/*"
-            class="register-input w-full p-2 border rounded"
-          />
-
-          <div *ngIf="previewImage" class="mt-2">
-            <img 
-              [src]="previewImage"
-              alt="Preview"
-              class="rounded-full object-cover border shadow"
-              style="width: 128px; height: 128px; max-width: 100%;"
-            />
-          </div>
-          
-        </div>
-
-        <!-- Gender -->
-        <div>
-          <label class="register-label">Gender</label>
-          <div class="flex gap-4 mt-1">
-            <label><input type="radio" value="male" formControlName="gender" /> Male</label>
-            <label><input type="radio" value="female" formControlName="gender" /> Female</label>
-            <label><input type="radio" value="other" formControlName="gender" /> Other</label>
-          </div>
-        </div>
-
-        <!-- Description -->
-        <div>
-          <label class="register-label">Description</label>
-          <textarea formControlName="description" rows="3" class="register-input w-full p-2 border rounded resize-none"></textarea>
+      <!-- Gender -->
+      <div class="form-row full-width">
+        <label class="register-label" style="margin-top: 14px">Gender</label>
+        <div class="gender-options">
+          <label
+            ><input type="radio" value="male" formControlName="gender" />
+            Male</label
+          >
+          <label
+            ><input type="radio" value="female" formControlName="gender" />
+            Female</label
+          >
+          <label
+            ><input type="radio" value="other" formControlName="gender" />
+            Other</label
+          >
         </div>
       </div>
 
       <!-- Submit button -->
-      <div class="col-span-1 md:col-span-2 text-center">
-        <button type="submit"
-                class="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white px-6 py-2 rounded-full font-semibold hover:shadow-lg transition">
+      <div class="form-row full-width text-center">
+        <button
+          type="submit"
+          class="btn-register"
+          [disabled]="usernameTaken || registerForm.invalid"
+        >
           Register
         </button>
+
         <p class="mt-4 text-sm text-gray-600">
           Already have an account?
-          <a routerLink="/login" class="register-link text-purple-600 hover:underline">Login</a>
+          <a routerLink="/login" class="register-link">Login</a>
         </p>
       </div>
     </form>
