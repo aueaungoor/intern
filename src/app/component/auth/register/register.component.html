@@ -2,15 +2,22 @@
   href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
   rel="stylesheet"
 />
-
 <div
-  class="register-wrapper bg-gradient-to-br from-purple-600 via-pink-400 to-orange-400 min-h-screen flex items-center justify-center p-4"
+  class="register-wrapper bg-gradient-to-br from-purple-600 via-pink-400 to-orange-400 min-h-screen flex items-center justify-center p-4 relative"
 >
+  <!-- Loading Spinner -->
+  <div
+    *ngIf="isLoading"
+    class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-60 z-50"
+  >
+    <div class="loader"></div>
+  </div>
+
   <div class="register-box bg-white p-8 rounded-2xl shadow-lg w-full max-w-4xl">
     <h2 class="register-title text-3xl font-bold text-center mb-6">Register</h2>
     <form
       [formGroup]="registerForm"
-      (ngSubmit)="onSubmit()"
+      (ngSubmit)="onSave()"
       class="register-form"
     >
       <div class="form-row">
@@ -18,25 +25,27 @@
           <label class="register-label">First Name</label>
           <input formControlName="fname" type="text" class="register-input" />
         </div>
-        <div class="form-group">
-          <label class="register-label">Last Name</label>
-          <input formControlName="lname" type="text" class="register-input" />
+        <div class="form-group username-wrapper">
+          <label class="register-label">Username</label>
+          <div class="input-relative">
+            <input
+              formControlName="username"
+              type="text"
+              class="register-input"
+              (input)="checkUsername($any($event.target).value)"
+            />
+            <!-- ✅ ต้องอยู่ใน input-relative เพื่อ absolute จะอิงกับกล่องนี้ -->
+            <div *ngIf="usernameTaken" class="input-error-pop">
+              ❌ ชื่อผู้ใช้นี้ถูกใช้งานแล้ว
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
-          <label class="register-label">Username</label>
-          <input
-            formControlName="username"
-            type="text"
-            class="register-input"
-            (input)="checkUsername($any($event.target).value)"
-          />
-
-          <small *ngIf="usernameTaken" style="color: red; margin-top: 0.25rem">
-            ชื่อผู้ใช้นี้ถูกใช้งานแล้ว กรุณาเปลี่ยนใหม่
-          </small>
+          <label class="register-label">Last Name</label>
+          <input formControlName="lname" type="text" class="register-input" />
         </div>
 
         <div class="form-group password-wrapper">
@@ -47,7 +56,31 @@
               formControlName="password"
               class="register-input"
               (input)="onPasswordInput($event)"
+              (focus)="passwordFocus = true"
+              (blur)="passwordFocus = false"
             />
+
+            <!-- ✅ Floating popup -->
+            <div class="password-popup right-tooltip" *ngIf="passwordFocus">
+              <div class="arrow"></div>
+              <ul>
+                <li [class.valid]="hasUpper">
+                  <span>{{ hasUpper ? "✅" : "❌" }}</span> ตัวพิมพ์ใหญ่
+                </li>
+                <li [class.valid]="hasLower">
+                  <span>{{ hasLower ? "✅" : "❌" }}</span> ตัวพิมพ์เล็ก
+                </li>
+                <li [class.valid]="hasNumber">
+                  <span>{{ hasNumber ? "✅" : "❌" }}</span> ตัวเลข
+                </li>
+                <li [class.valid]="hasSpecial">
+                  <span>{{ hasSpecial ? "✅" : "❌" }}</span> อักขระพิเศษ
+                </li>
+                <li [class.valid]="isLongEnough">
+                  <span>{{ isLongEnough ? "✅" : "❌" }}</span> อย่างน้อย 8 ตัว
+                </li>
+              </ul>
+            </div>
             <button
               type="button"
               class="password-toggle-btn"
@@ -171,5 +204,13 @@
         </p>
       </div>
     </form>
+
+    <div *ngIf="showSuccess" class="success-overlay">
+      <div class="success-box">
+        <div class="success-icon">✅</div>
+        <h2>สมัครสมาชิกสำเร็จ</h2>
+        <button (click)="closeSuccessModal()">ตกลง</button>
+      </div>
+    </div>
   </div>
 </div>

@@ -47,24 +47,19 @@ export class RegisterComponent {
   usernameTaken: boolean = false;
   showPassword = false;
   passwordStrength = 0;
+  isLoading = false;
+  showSuccess = false;
+  passwordFocus = false;
+  hasUpper = false;
+  hasLower = false;
+  hasNumber = false;
+  hasSpecial = false;
+  isLongEnough = false;
 
   // For Object
   criteria: Account = {
     username: '',
   };
-
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.selectedFile = input.files[0];
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.previewImage = reader.result as string;
-      };
-      reader.readAsDataURL(this.selectedFile);
-    }
-  }
 
   onSubmit(): void {
     if (this.registerForm.valid && this.selectedFile) {
@@ -108,6 +103,29 @@ export class RegisterComponent {
       console.warn('⚠️ Form is not valid or no file selected');
     }
   }
+
+  onSave(): void {
+    if (this.registerForm.valid) {
+      this.isLoading = true;
+      this.accountService.createAccount(this.registerForm.value).subscribe({
+        next: (res) => {
+          console.log('✅ Account created:', res);
+          this.isLoading = false;
+          this.showSuccess = true;
+        },
+        error: (err) => {
+          console.error('❌ Account creation failed:', err);
+          this.isLoading = false;
+        },
+      });
+    }
+  }
+
+  closeSuccessModal() {
+    this.showSuccess = false;
+    this.router.navigate(['/login']);
+  }
+
   getToday(): string {
     const today = new Date();
     const year = today.getFullYear();
@@ -153,13 +171,6 @@ export class RegisterComponent {
   evaluatePasswordStrength(password: string) {
     let score = 0;
 
-    // if (!password) {
-    //   this.passwordStrength = 0;
-    //   return;
-    // }
-
-    // ความยาว
-
     if (password.length >= 8) score += 1;
 
     // มีตัวพิมพ์ใหญ่
@@ -171,12 +182,23 @@ export class RegisterComponent {
     // มีสัญลักษณ์พิเศษ
     if (/[^A-Za-z0-9]/.test(password)) score += 1;
 
-    // ตั้งค่าคะแนนเต็ม 5 หรือ 100%
+    // ตั้งค่าคะแนนเต็ม 4 หรือ 100%
     this.passwordStrength = Math.min(score, 4);
   }
 
+  // onPasswordInput(event: Event) {
+  //   const input = event.target as HTMLInputElement;
+  //   this.evaluatePasswordStrength(input.value);
+  // }
+
   onPasswordInput(event: Event) {
-    const input = event.target as HTMLInputElement;
-    this.evaluatePasswordStrength(input.value);
+    const input = (event.target as HTMLInputElement).value;
+    this.hasUpper = /[A-Z]/.test(input);
+    this.hasLower = /[a-z]/.test(input);
+    this.hasNumber = /\d/.test(input);
+    this.hasSpecial = /[^A-Za-z0-9]/.test(input);
+    this.isLongEnough = input.length >= 8;
+
+    this.evaluatePasswordStrength(input); // ใช้ต่อกับ strength bar
   }
 }

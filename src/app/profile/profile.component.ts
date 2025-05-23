@@ -1,88 +1,94 @@
+import { CommonModule } from '@angular/common'; // ✅ สำหรับ *ngIf, *ngFor
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common'; // ✅ สำหรับ *ngIf, *ngFor
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
-  imports: [ FormsModule,   CommonModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './profile.component.html',
-  styleUrl: './profile.component.css'
+  styleUrl: './profile.component.css',
 })
 export class ProfileComponent implements OnInit {
+  account: any;
 
+  picdefault: String =
+    '/home/aueaungoorn/uploads/blank-profile-picture-973460_1280.webp';
 
-  account : any;
-  picdefault :String = '/home/aueaungoorn/uploads/blank-profile-picture-973460_1280.webp';
-
-  constructor(private http: HttpClient , private router: Router , private route: ActivatedRoute) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
     const userId = this.route.snapshot.paramMap.get('id');
-    this.http.get<AccountResponse>(`http://localhost:8080/accounts/${userId}`).subscribe({
-      next: (res) => {
-        this.account = res;
-        if(res.data.pathpicture)
-          {
-            this.http.get('http://localhost:8080/accounts/base64' , {
-              params: {filename: res.data.pathpicture.toString()},
-              responseType:'text'
-            }).subscribe(base64 => {
-            
-              if (this.account) {
-                this.account.data.pathpicture = 'data:image/png;base64,' + base64;
-              }
-
-              
-
-            })
+    this.http
+      .get<AccountResponse>(`http://localhost:8080/accounts/${userId}`)
+      .subscribe({
+        next: (res) => {
+          console.log('account', res);
+          this.account = res;
+          if (res.data.pathpicture) {
+            this.http
+              .get('http://localhost:8080/accounts/base64', {
+                params: { filename: res.data.pathpicture.toString() },
+                responseType: 'text',
+              })
+              .subscribe((base64) => {
+                if (this.account) {
+                  this.account.data.pathpicture =
+                    'data:image/png;base64,' + base64;
+                }
+              });
+          } else {
+            this.http
+              .get('http://localhost:8080/accounts/base64', {
+                params: { filename: this.picdefault.toString() },
+                responseType: 'text',
+              })
+              .subscribe((base64) => {
+                if (this.account) {
+                  this.account.data.pathpicture =
+                    'data:image/png;base64,' + base64;
+                }
+              });
           }
-          else{
-            this.http.get('http://localhost:8080/accounts/base64' , {
-              params: {filename: this.picdefault.toString()},
-              responseType:'text'
-            }).subscribe(base64 => {
-            
-              if (this.account) {
-                this.account.data.pathpicture = 'data:image/png;base64,' + base64;
-
-                
-              }
-              
-    
-            })
-          }
-        console.log("account -> {}",this.account);
-      
-      },
-      error: () => alert('ดึงข้อมูลไ่ม่สำเร็จ')
-    });
+          console.log('account -> {}', this.account);
+        },
+        error: () => alert('ดึงข้อมูลไ่ม่สำเร็จ'),
+      });
   }
 
-  
   onFileSelected(event: any) {
     const file = event.target.files[0];
-  
+
     if (file) {
       // ✅ สร้าง FormData เพื่อแนบไฟล์
       const formData = new FormData();
       formData.append('newfile', file); // ต้องตรงกับชื่อใน @RequestParam("newfile")
-  
+
       // ✅ เรียก API เพื่ออัปโหลดรูป
-      this.http.put(`http://localhost:8080/accounts/editpic/${this.account.data.idaccount}`, formData, {
-        responseType: 'text' as 'json'
-      }).subscribe(
-        res => {
-          console.log('✅ บันทึกสำเร็จ:', res);
-          alert(res);
-        },
-        error => {
-          console.error('❌ ERROR:', error);
-          alert('เกิดข้อผิดพลาด: ' + error.message);
-        }
-      );
-  
+      this.http
+        .put(
+          `http://localhost:8080/accounts/editpic/${this.account.data.idaccount}`,
+          formData,
+          {
+            responseType: 'text' as 'json',
+          }
+        )
+        .subscribe(
+          (res) => {
+            console.log('✅ บันทึกสำเร็จ:', res);
+            alert(res);
+          },
+          (error) => {
+            console.error('❌ ERROR:', error);
+            alert('เกิดข้อผิดพลาด: ' + error.message);
+          }
+        );
+
       // ✅ แสดง preview รูปทันที
       const reader = new FileReader();
       reader.onload = () => {
@@ -95,66 +101,68 @@ export class ProfileComponent implements OnInit {
   }
 
   deleteAccount(): void {
-    if (confirm("คุณแน่ใจหรือไม่ว่าต้องการลบบัญชีนี้?")) {
-      this.http.delete(`http://localhost:8080/accounts/${this.account.data.idaccount}`, { responseType: 'text' })
+    if (confirm('คุณแน่ใจหรือไม่ว่าต้องการลบบัญชีนี้?')) {
+      this.http
+        .delete(
+          `http://localhost:8080/accounts/${this.account.data.idaccount}`,
+          { responseType: 'text' }
+        )
         .subscribe({
           next: () => {
-            alert("✅ ลบบัญชีสำเร็จ");
+            alert('✅ ลบบัญชีสำเร็จ');
             this.router.navigate(['/mainpage']); // กลับไปหน้าหลัก
           },
-          error: () => alert("❌ ลบไม่สำเร็จ")
+          error: () => alert('❌ ลบไม่สำเร็จ'),
         });
     }
   }
-  
-  
 
   updateProfile() {
-    this.http.put(`http://localhost:8080/accounts/editaccount/${this.account.data.idaccount}`, this.account.data, {
-      responseType: 'text' as 'json'  // 👈 บอก Angular ว่ารับเป็น text แต่ยังใช้เป็น json response ได้
-    }).subscribe(
-      res => {
-        console.log('✅ บันทึกสำเร็จ:', res);
-        // ถ้าอยากโชว์ข้อความให้ผู้ใช้เห็น
-        alert(res);
-      },
-      error => {
-        console.error('❌ ERROR:', error);
-        alert('เกิดข้อผิดพลาด: ' + error.message);
-      }
-    );
-  
+    this.http
+      .put(
+        `http://localhost:8080/accounts/editaccount/${this.account.data.idaccount}`,
+        this.account.data,
+        {
+          responseType: 'text' as 'json', // 👈 บอก Angular ว่ารับเป็น text แต่ยังใช้เป็น json response ได้
+        }
+      )
+      .subscribe(
+        (res) => {
+          console.log('✅ บันทึกสำเร็จ:', res);
+          // ถ้าอยากโชว์ข้อความให้ผู้ใช้เห็น
+          alert(res);
+        },
+        (error) => {
+          console.error('❌ ERROR:', error);
+          alert('เกิดข้อผิดพลาด: ' + error.message);
+        }
+      );
+
     console.log('📤 ส่งข้อมูล:', this.account);
   }
-  
 
   showPassword: boolean = false;
 
-togglePasswordVisibility() {
-  this.showPassword = !this.showPassword;
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+
+  goToMainPage() {
+    this.router.navigate(['/mainpage']);
+  }
 }
-
-goToMainPage() {
-  this.router.navigate(['/mainpage']);
-}
-
-}
-
-
-
 
 interface AccountResponse {
-  data:{
+  data: {
     idaccount: number;
-  username: string;
-  password: string;
-  fname: string;
-  lname: string;
-  description: string;
-  gender: string;
-  birthday: string;
-  pathpicture :String;
-  }
-  message:String;
-  
+    username: string;
+    password: string;
+    fname: string;
+    lname: string;
+    description: string;
+    gender: string;
+    birthday: string;
+    pathpicture: String;
+  };
+  message: String;
 }

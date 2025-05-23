@@ -181,6 +181,7 @@ small {
   flex-direction: column;
   min-width: 180px; /* กำหนดความกว้างขั้นต่ำ */
   margin: 3%;
+  min-height: 100px; /* เพิ่มบรรทัดนี้ ถ้า layout เต้น */
 }
 
 .btn-register:disabled {
@@ -224,7 +225,7 @@ small {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top: 0.2rem;
+  margin-top: 0.5rem;
 }
 
 .password-strength-bar {
@@ -260,6 +261,181 @@ small {
   min-width: 40px;
   text-align: right;
 }
+
+.loader {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #7e22ce;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ถ้าไม่ใช้ tailwind คุณสามารถเพิ่มเองแบบนี้ก็ได้ */
+.success-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.success-box {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  width: 320px;
+}
+
+.success-box h2 {
+  font-size: 1.5rem;
+  margin: 1rem 0;
+  color: #10b981; /* สีเขียวแบบ tailwind */
+}
+
+.success-box button {
+  background: #7e22ce;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.success-box button:hover {
+  background: #6b21a8;
+}
+
+.success-icon {
+  font-size: 3rem;
+}
+
+.password-popup {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  margin-top: 6px;
+  background: #f3f4f6;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  padding: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.password-popup ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.password-popup li {
+  display: flex;
+  align-items: center;
+  color: #dc2626;
+  margin-bottom: 4px;
+}
+
+.password-popup li.valid {
+  color: #16a34a;
+}
+
+.password-popup span {
+  display: inline-block;
+  width: 1.25rem;
+}
+
+.username-wrapper {
+  position: relative;
+}
+
+.input-relative {
+  position: relative;
+  width: 100%;
+}
+
+.input-error-pop {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #fee2e2;
+  color: #b91c1c;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.85rem;
+  border-radius: 0.5rem;
+  border: 1px solid #fca5a5;
+  margin-top: 4px;
+  white-space: nowrap;
+  z-index: 50;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* ปรับ popup ไปด้านขวา */
+.password-popup.right-tooltip {
+  position: absolute;
+  top: 50%;
+left: calc(100% + 30px); /* ✅ ขยับขวาเพิ่ม */
+  transform: translateY(-50%);
+  width: 220px;
+  background: #f3f4f6;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  padding: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.password-popup.right-tooltip .arrow {
+  position: absolute;
+  top: 50%;
+  left: -10px; /* ขยับให้อยู่ด้านนอก popup */
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right: 10px solid #f3f4f6; /* ต้องตรงกับพื้นหลัง popup */
+  z-index: 999;
+}
+
+
+/* รายการภายใน popup */
+.password-popup.right-tooltip ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.password-popup.right-tooltip li {
+  display: flex;
+  align-items: center;
+  color: #dc2626;
+  margin-bottom: 4px;
+}
+
+.password-popup.right-tooltip li.valid {
+  color: #16a34a;
+}
+
+.password-popup.right-tooltip span {
+  display: inline-block;
+  width: 1.25rem;
+}
+
 
 
 
