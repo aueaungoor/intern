@@ -1,4 +1,5 @@
 export interface Account {
+  pathpicture?: string;
   idaccount?: number;
   username?: string;
   password?: string;

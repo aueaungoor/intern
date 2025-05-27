@@ -39,6 +39,7 @@ export class MainpageComponent implements OnInit {
   currentPage: number = 1;
   itemsPerPage: number = 5;
   totalPages: number = 1;
+  modalPage: number = 0;
 
   showModal: boolean = false;
   modalType: 'sport' | 'career' = 'sport';

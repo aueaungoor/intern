@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Account } from '../models/account';
 
 @Component({
   selector: 'app-profile',
@@ -13,14 +14,28 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class ProfileComponent implements OnInit {
   account: any;
 
-  picdefault: String =
-    '/home/aueaungoorn/uploads/blank-profile-picture-973460_1280.webp';
+  picdefault: String = '/home/aueaungoor/Pictures/defaultProfile.jpg';
 
   constructor(
     private http: HttpClient,
     private router: Router,
     private route: ActivatedRoute
   ) {}
+
+  // varlible
+  isAdmin = false;
+  isFormChanged = false;
+
+  // for Object
+  accountEdit: Account = {
+    username: '',
+    password: '',
+    fname: '',
+    lname: '',
+    gender: '',
+    description: '',
+  };
+  accountOriginal: Account | null = null;
 
   ngOnInit() {
     const userId = this.route.snapshot.paramMap.get('id');
@@ -30,6 +45,7 @@ export class ProfileComponent implements OnInit {
         next: (res) => {
           console.log('account', res);
           this.account = res;
+          this.accountOriginal = JSON.parse(JSON.stringify(res.data));
           if (res.data.pathpicture) {
             this.http
               .get('http://localhost:8080/accounts/base64', {
@@ -59,6 +75,9 @@ export class ProfileComponent implements OnInit {
         },
         error: () => alert('ดึงข้อมูลไ่ม่สำเร็จ'),
       });
+    if (localStorage.getItem('userRole') === 'admin') {
+      this.isAdmin = true;
+    }
   }
 
   onFileSelected(event: any) {
@@ -139,6 +158,7 @@ export class ProfileComponent implements OnInit {
       );
 
     console.log('📤 ส่งข้อมูล:', this.account);
+    this.isFormChanged = false;
   }
 
   showPassword: boolean = false;
@@ -148,10 +168,18 @@ export class ProfileComponent implements OnInit {
   }
 
   goToMainPage() {
-    this.router.navigate(['/mainpage']);
+    if (1) {
+      this.router.navigate(['/mainpage']);
+    }
+  }
+
+  onInputChange() {
+    if (!this.account || !this.accountOriginal) return;
+    this.isFormChanged =
+      JSON.stringify(this.account.data) !==
+      JSON.stringify(this.accountOriginal);
   }
 }
-
 interface AccountResponse {
   data: {
     idaccount: number;

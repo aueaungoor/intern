@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AccountResponse } from '../../../model-response/accountResponse';
 import { Account } from '../../../models/account';
+import { AuthService } from '../../../services/auth.service';
 import { AccountService } from './login.service';
 
 @Component({
@@ -17,12 +18,14 @@ import { AccountService } from './login.service';
   styleUrls: ['./login.component.css'], // ✅ แก้ styleUrl → styleUrls
 })
 export class LoginComponent {
+  [x: string]: any;
   loginForm: FormGroup;
 
   constructor(
     private fb: FormBuilder,
     public router: Router,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private authService: AuthService
   ) {
     this.loginForm = this.fb.group({
       username: [''],
@@ -54,7 +57,8 @@ export class LoginComponent {
               this.router.navigate(['/mainpage']).then(() => {
                 setTimeout(() => {
                   this.loginSuccess = false;
-                }, 1000); // ✅ รอ 1 วินาทีแล้วปิด popup
+                }, 1000);
+                localStorage.setItem('userRole', 'admin');
               });
             } else {
               this.router
@@ -62,15 +66,11 @@ export class LoginComponent {
                 .then(() => {
                   setTimeout(() => {
                     this.loginSuccess = false;
-                  }, 1000); // ✅ รอ 1 วินาทีแล้วปิด popup
+                  }, 1000);
+                  localStorage.setItem('userRole', 'user');
                 });
             }
-
-            this.loginSuccess = true;
-            this.loginFailed = false;
           } else {
-            this.loginSuccess = false;
-            this.loginFailed = true;
           }
         },
       });

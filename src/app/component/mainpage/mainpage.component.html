@@ -1,54 +1,26 @@
 <div class="container">
   <div class="top-right">
     <button *ngIf="isLoggedIn" class="logout-btn" (click)="logout()">
-      ออกจากระบบ
+      🚪 ออกจากระบบ
     </button>
   </div>
 
-  <h1 class="title">รายชื่อผู้ใช้งาน</h1>
-  <!-- ปุ่มค้นหา รีเซ็ต และ Export -->
-  <div class="mb-4 flex items-center gap-2 flex-wrap">
+  <h1 class="title">📋 รายชื่อผู้ใช้งาน</h1>
+  <div class="action-bar">
     <input
       type="text"
       [(ngModel)]="searchKeyword"
-      placeholder="ค้นหา Username / ชื่อ / นามสกุล"
-      class="border p-2 rounded w-64 shadow-sm"
+      placeholder="🔍 ค้นหา Username / ชื่อ / นามสกุล"
+      class="search-input"
     />
 
-    <button
-      (click)="searchAccounts()"
-      class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 shadow-md flex items-center gap-1"
-    >
-      🔍 ค้นหา
+    <button (click)="searchAccounts()" class="action-btn blue">ค้นหา</button>
+    <button (click)="loadAccountspadding()" class="action-btn gray">
+      รีเซ็ต
     </button>
-
-    <button
-      (click)="loadAccountspadding()"
-      class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 shadow-md flex items-center gap-1"
-    >
-      🔄 รีเซ็ต
-    </button>
-
-    <button
-      (click)="exportToCSV()"
-      class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 shadow-md flex items-center gap-1"
-    >
-      📄 Export CSV
-    </button>
-
-    <button
-      (click)="exportToExcel()"
-      class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 shadow-md flex items-center gap-1"
-    >
-      📊 Export Excel
-    </button>
-
-    <button
-      (click)="goToZipfilePage()"
-      class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 shadow-md flex items-center gap-1"
-    >
-      📦 Zipfile
-    </button>
+    <button (click)="exportToCSV()" class="action-btn green">CSV</button>
+    <button (click)="exportToExcel()" class="action-btn yellow">Excel</button>
+    <button (click)="goToZipfilePage()" class="action-btn purple">ZIP</button>
   </div>
 
   <table class="styled-table">
@@ -62,9 +34,9 @@
         <th>คำอธิบาย</th>
         <th>เพศ</th>
         <th>วันเกิด</th>
-        <th>sport</th>
-        <th>career</th>
-        <th>action</th>
+        <th>กีฬา</th>
+        <th>อาชีพ</th>
+        <th>การกระทำ</th>
       </tr>
     </thead>
     <tbody>
@@ -77,44 +49,40 @@
         <td>{{ account.description }}</td>
         <td>{{ account.gender }}</td>
         <td>{{ account.birthday }}</td>
-        <td><button (click)="getSport(account)">ดู Sport</button></td>
-        <td><button (click)="getCareer(account)">ดู Career</button></td>
-        <td colspan="2">
-          <button (click)="viewProfile(account.idaccount)">ดูโปรไฟล์</button>
+        <td>
+          <button class="table-action" (click)="getSport(account)">ดู</button>
+        </td>
+        <td>
+          <button class="table-action" (click)="getCareer(account)">ดู</button>
+        </td>
+        <td>
+          <button
+            class="table-action primary"
+            (click)="viewProfile(account.idaccount)"
+          >
+            โปรไฟล์
+          </button>
         </td>
       </tr>
     </tbody>
   </table>
 
-  <div class="pagination flex justify-center items-center gap-4 mt-4">
-    <button
-      class="bg-gray-300 px-4 py-2 rounded"
-      (click)="previousPage()"
-      [disabled]="paging.index <= 1"
-    >
-      ก่อนหน้า
+  <div class="pagination">
+    <button (click)="previousPage()" [disabled]="paging.index <= 1">
+      ← ก่อนหน้า
     </button>
-
     <span>หน้า {{ paging.index }} / {{ totalPages }}</span>
-
-    <button
-      class="bg-blue-500 text-white px-4 py-2 rounded"
-      (click)="nextPage()"
-      [disabled]="paging.index >= totalPages"
-    >
-      ถัดไป
+    <button (click)="nextPage()" [disabled]="paging.index >= totalPages">
+      ถัดไป →
     </button>
   </div>
 
-  <!-- Modal สำหรับแสดงข้อมูล -->
   <div class="modal-overlay" *ngIf="showModal">
     <div class="modal-content modal-split">
-      <h2 class="modal-title">ข้อมูลผู้ใช้</h2>
-
+      <h2 class="modal-title">🧾 ข้อมูลผู้ใช้</h2>
       <div class="modal-columns modal-columns-split">
-        <!-- SPORT LIST -->
         <div class="modal-section" *ngIf="modalType === 'sport'">
-          <h3>🏅 กีฬา (Sport)</h3>
+          <h3>🏅 กีฬา</h3>
           <ul>
             <li *ngFor="let item of modalData">
               {{ item.name }}
@@ -126,9 +94,7 @@
               </button>
             </li>
           </ul>
-        </div>
-        <div class="modal-section" *ngIf="modalType === 'sport'">
-          <h4>➕ เพิ่มกีฬาใหม่</h4>
+          <h4>➕ เพิ่มกีฬา</h4>
           <div class="checkbox-grid">
             <label *ngFor="let sport of allSports">
               <ng-container *ngIf="hasNotItem(sport)">
@@ -140,12 +106,13 @@
               </ng-container>
             </label>
           </div>
-          <button (click)="submitAddSelected('sport')">เพิ่มกีฬา</button>
+          <button class="confirm-btn" (click)="submitAddSelected('sport')">
+            เพิ่ม
+          </button>
         </div>
 
-        <!-- CAREER LIST -->
         <div class="modal-section" *ngIf="modalType === 'career'">
-          <h3>💼 อาชีพ (Career)</h3>
+          <h3>💼 อาชีพ</h3>
           <ul>
             <li *ngFor="let item of modalData">
               {{ item.name }}
@@ -157,9 +124,7 @@
               </button>
             </li>
           </ul>
-        </div>
-        <div class="modal-section" *ngIf="modalType === 'career'">
-          <h4>➕ เพิ่มอาชีพใหม่</h4>
+          <h4>➕ เพิ่มอาชีพ</h4>
           <div class="checkbox-grid">
             <label *ngFor="let career of allCareers">
               <ng-container *ngIf="hasNotItem(career)">
@@ -171,18 +136,18 @@
               </ng-container>
             </label>
           </div>
-          <button (click)="submitAddSelected('career')">เพิ่มอาชีพ</button>
+          <button class="confirm-btn" (click)="submitAddSelected('career')">
+            เพิ่ม
+          </button>
         </div>
       </div>
-
       <button class="close-btn" (click)="closeModal()">ปิด</button>
     </div>
   </div>
 
-  <!-- Modal แก้ไขข้อมูล Account -->
   <div class="modal-overlay" *ngIf="showEditModal">
     <div class="modal-content">
-      <h2>แก้ไขข้อมูลผู้ใช้</h2>
+      <h2>📝 แก้ไขข้อมูล</h2>
       <form *ngIf="editAccount" (ngSubmit)="submitEdit()" #f="ngForm">
         <label>ชื่อ</label>
         <input [(ngModel)]="editAccount.fname" name="fname" required />
@@ -204,43 +169,27 @@
           name="description"
         ></textarea>
 
-        <!-- <label class="register-label">New Profile Picture</label>
-            <input
-              type="file"
-              (change)="/viewProfile"
-              accept="image/*"
-              class="register-input"
-            />
-
-            <img *ngIf="editAccount.pathpicture"
-     [src]="editAccount.pathpicture"
-     
-     alt="รูปโปรไฟล์"
-     width="60"
-     height="60"
-     style="border-radius: 50%;" />
-          
-  
-          <br /> -->
-        <button type="submit">บันทึก</button>
-        <button class="close-btn" (click)="closeEditModal()" type="button">
-          ยกเลิก
-        </button>
+        <div class="modal-actions">
+          <button type="submit" class="confirm-btn">บันทึก</button>
+          <button class="close-btn" (click)="closeEditModal()" type="button">
+            ยกเลิก
+          </button>
+        </div>
       </form>
     </div>
   </div>
 
-  <!-- Modal ยืนยันการลบ -->
   <div class="modal-overlay" *ngIf="showDeleteModal">
     <div class="modal-content">
       <h2>⚠️ ยืนยันการลบ</h2>
       <p>คุณต้องการลบผู้ใช้นี้จริงหรือไม่?</p>
-      <button (click)="deleteAccount()">ยืนยัน</button>
-      <button (click)="cancelDelete()">ยกเลิก</button>
+      <div class="modal-actions">
+        <button class="confirm-btn" (click)="deleteAccount()">ยืนยัน</button>
+        <button class="close-btn" (click)="cancelDelete()">ยกเลิก</button>
+      </div>
     </div>
   </div>
 
-  <!-- ✅ แจ้งเตือนเมื่อ Login สำเร็จ -->
   <div *ngIf="loginSuccess" class="login-alert success">
     <h3>✅ Login สำเร็จ</h3>
     <button (click)="closeAlert()">ตกลง</button>
