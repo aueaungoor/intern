@@ -159,7 +159,7 @@ export class ProfileComponent implements OnInit {
         }
       );
 
-    console.log('📤 ส่งข้อมูdddล:', this.account);
+    console.log('📤 ส่งข้อมูล:', this.account);
 
     this.isFormChanged = false;
   }
