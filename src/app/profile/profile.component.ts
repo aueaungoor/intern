@@ -35,7 +35,7 @@ export class ProfileComponent implements OnInit {
     gender: '',
     description: '',
   };
-  accountOriginal: Account | null = null;
+  accountOriginal: any;
 
   ngOnInit() {
     const userId = this.route.snapshot.paramMap.get('id');
@@ -149,6 +149,8 @@ export class ProfileComponent implements OnInit {
         (res) => {
           console.log('✅ บันทึกสำเร็จ:', res);
           // ถ้าอยากโชว์ข้อความให้ผู้ใช้เห็น
+          this.accountOriginal = JSON.parse(JSON.stringify(this.account.data));
+
           alert(res);
         },
         (error) => {
@@ -158,6 +160,7 @@ export class ProfileComponent implements OnInit {
       );
 
     console.log('📤 ส่งข้อมูล:', this.account);
+
     this.isFormChanged = false;
   }
 
@@ -174,10 +177,22 @@ export class ProfileComponent implements OnInit {
   }
 
   onInputChange() {
-    if (!this.account || !this.accountOriginal) return;
+    console.log('origin = ', this.accountOriginal);
+    console.log('new = ', this.account.data);
+
+    const cleanCurrent = { ...this.account.data };
+    const cleanOriginal = { ...this.accountOriginal };
+
+    // ลบ property รูปภาพที่ไม่ต้องการเช็คออก
+    delete cleanCurrent.pathpicture;
+    delete cleanOriginal.pathpicture;
+
+    // (ถ้ามี field อื่นที่อยากละเว้นก็นำมาลบที่นี่ได้อีก)
+
     this.isFormChanged =
-      JSON.stringify(this.account.data) !==
-      JSON.stringify(this.accountOriginal);
+      JSON.stringify(cleanCurrent) !== JSON.stringify(cleanOriginal);
+
+    console.log('isFormChanged:', this.isFormChanged);
   }
 }
 interface AccountResponse {
