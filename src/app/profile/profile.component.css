@@ -183,7 +183,13 @@
   font-weight: 600;
   border: none;
   transition: background-color 0.3s ease;
+  gap: 0rem; 
 }
+.left-buttons {
+  display: flex;
+  gap: 1rem; /* เว้นช่องว่างระหว่างปุ่มฝั่งซ้าย */
+}
+
 
 .delete-btn:hover {
   background-color: #dc2626;

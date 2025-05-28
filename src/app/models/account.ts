@@ -12,4 +12,10 @@ export interface Account {
 
   available?: boolean;
   message?: String;
+
+  country?: String;
+
+  province?: String;
+
+  district?: String;
 }

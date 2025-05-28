@@ -49,14 +49,13 @@ export class LoginComponent {
         next: (response) => {
           console.log('✅ Login success:', response);
 
-          // ✅ ตรวจว่ามีค่า username กลับมาจริง
           if (response.message == 'ดึงข้อมูลสำเร็จ') {
             localStorage.setItem('isLoggedIn', 'true');
 
             if (response.data.isAdmin == true) {
               this.router.navigate(['/mainpage']).then(() => {
                 setTimeout(() => {
-                  this.loginSuccess = false;
+                  this.loginFailed = false;
                 }, 1000);
                 localStorage.setItem('userRole', 'admin');
               });
@@ -65,12 +64,13 @@ export class LoginComponent {
                 .navigate(['/profile', response.data.idaccount])
                 .then(() => {
                   setTimeout(() => {
-                    this.loginSuccess = false;
+                    this.loginFailed = false;
                   }, 1000);
                   localStorage.setItem('userRole', 'user');
                 });
             }
           } else {
+            this.loginFailed = true;
           }
         },
       });

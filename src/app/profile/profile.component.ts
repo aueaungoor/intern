@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Account } from '../models/account';
+import { Country } from '../models/country';
 
 @Component({
   selector: 'app-profile',
@@ -36,6 +37,8 @@ export class ProfileComponent implements OnInit {
     description: '',
   };
   accountOriginal: any;
+
+  country: Country = {};
 
   ngOnInit() {
     const userId = this.route.snapshot.paramMap.get('id');
@@ -78,6 +81,12 @@ export class ProfileComponent implements OnInit {
     if (localStorage.getItem('userRole') === 'admin') {
       this.isAdmin = true;
     }
+
+    this.getCountry();
+  }
+
+  getCountry() {
+    // this.country = AccountService.getCountry();
   }
 
   onFileSelected(event: any) {
@@ -193,6 +202,11 @@ export class ProfileComponent implements OnInit {
       JSON.stringify(cleanCurrent) !== JSON.stringify(cleanOriginal);
 
     console.log('isFormChanged:', this.isFormChanged);
+  }
+
+  logout(): void {
+    localStorage.removeItem('isLoggedIn');
+    window.location.href = '/login';
   }
 }
 interface AccountResponse {

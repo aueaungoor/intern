@@ -1,9 +1,29 @@
 <div class="profile-wrapper">
   <div class="profile-card">
     <!-- ปุ่มด้านบนขวา -->
-    <div *ngIf="isAdmin" class="top-button-bar">
-      <button class="back-btn" (click)="goToMainPage()">🔙 กลับ</button>
-      <button type="button" class="delete-btn" (click)="deleteAccount()">
+    <div class="top-button-bar">
+      <div class="left-buttons">
+        <button
+          *ngIf="isAdmin; else userTemplate"
+          class="back-btn"
+          (click)="goToMainPage()"
+        >
+          🔙 กลับ
+        </button>
+
+        <ng-template #userTemplate>
+          <button class="logout-btn" (click)="logout()">🚪 ออกจากระบบ</button>
+
+          <button class="back-btn">➡️ ไปเพิ่มอาชีพ</button>
+        </ng-template>
+      </div>
+
+      <button
+        *ngIf="isAdmin"
+        type="button"
+        class="delete-btn"
+        (click)="deleteAccount()"
+      >
         🗑 ลบ Account
       </button>
     </div>
