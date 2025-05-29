@@ -48,6 +48,30 @@
       </label>
     </div>
 
+    <div>
+      <button class="back-btn" (click)="LocationModel()">
+        {{ account?.data?.country ? "แก้ไขที่อยุ่" : "เพิ่มที่อยุ่" }}
+      </button>
+    </div>
+
+    <!-- ✅ กรอบที่อยู่แนวนอน: ประเทศ + จังหวัด + อำเภอ -->
+    <div
+      *ngIf="
+        account?.data?.country &&
+        account?.data?.province &&
+        account?.data?.district
+      "
+      class="address-card-horizontal"
+    >
+      <span class="address-icon">📍</span>
+      <span class="address-label">ที่อยู่:</span>
+      <span class="address-item">ประเทศ {{ account.data.country }}</span>
+      <span class="address-separator">|</span>
+      <span class="address-item">จังหวัด {{ account.data.province }}</span>
+      <span class="address-separator">|</span>
+      <span class="address-item">อำเภอ {{ account.data.district }}</span>
+    </div>
+
     <!-- ฟอร์ม -->
     <form *ngIf="account" (ngSubmit)="updateProfile()" class="profile-form">
       <div>
@@ -173,5 +197,101 @@
         </button>
       </div>
     </form>
+  </div>
+</div>
+
+<div class="form-container" *ngIf="LocationForm">
+  <form #locationForm="ngForm" (ngSubmit)="SubmitLocation()">
+    <div class="form-group">
+      <label for="country">ประเทศ</label>
+      <select
+        id="country"
+        [(ngModel)]="selectedCountry"
+        name="country"
+        (change)="onCountryChange()"
+        required
+      >
+        <option
+          [ngValue]="null"
+          disabled
+          style="color: #9ca3af; font-style: italic"
+        >
+          -- เลือกประเทศ --
+        </option>
+        <option *ngFor="let item of country" [ngValue]="item">
+          {{ item?.name }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="province">จังหวัด</label>
+      <select
+        id="province"
+        [(ngModel)]="selectedProvince"
+        name="province"
+        (change)="onProvinceChange()"
+        [disabled]="!selectedCountry"
+        required
+      >
+        <option
+          [ngValue]="null"
+          disabled
+          style="color: #9ca3af; font-style: italic"
+        >
+          -- เลือกจังหวัด --
+        </option>
+        <option *ngFor="let item of province" [ngValue]="item">
+          {{ item?.name }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="district">อำเภอ</label>
+      <select
+        id="district"
+        [(ngModel)]="selectedDistrict"
+        name="district"
+        [disabled]="!selectedProvince"
+        (change)="onDistrictChange()"
+        required
+      >
+        <option [ngValue]="null" disabled>-- เลือกอำเภอ --</option>
+        <option *ngFor="let item of district" [ngValue]="item">
+          {{ item?.name }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-actions" style="margin-top: 1.5rem">
+      <button
+        class="submit-btn"
+        type="submit"
+        [disabled]="!locationForm.form.valid"
+      >
+        💾 บันทึก
+      </button>
+      <button class="cancel-btn" type="button" (click)="LocationForm = false">
+        ❌ ยกเลิก
+      </button>
+      <button
+        type="button"
+        class="reset-btn"
+        (click)="resetLocationFields()"
+        *ngIf="selectedCountry || selectedProvince || selectedDistrict"
+      >
+        🔄 ล้างค่า
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- ✅ Popup แจ้งเตือน -->
+<div *ngIf="isSuccess" class="popup-overlay">
+  <div class="popup-content">
+    <h3>✅ สำเร็จ</h3>
+    <p>แก้ไขข้อมูลเรียบร้อยแล้ว</p>
+    <button (click)="closePopup()">ปิด</button>
   </div>
 </div>

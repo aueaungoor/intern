@@ -3,14 +3,20 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Account } from '../models/account';
+import { DropdownModule } from 'primeng/dropdown';
 import { Country } from '../models/country';
+import { District } from '../models/district';
+import { AddressLocation } from '../models/location';
+import { Province } from '../models/province';
+import { ResponseApi } from '../models/response';
+import { AccountService } from '../services/AccountService';
 
 @Component({
   selector: 'app-profile',
-  imports: [FormsModule, CommonModule],
+  standalone: true,
+  imports: [FormsModule, CommonModule, DropdownModule],
   templateUrl: './profile.component.html',
-  styleUrl: './profile.component.css',
+  styleUrls: ['./profile.component.css'], // ✅ แก้ตรงนี้
 })
 export class ProfileComponent implements OnInit {
   account: any;
@@ -20,25 +26,34 @@ export class ProfileComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private accountService: AccountService
   ) {}
 
   // varlible
   isAdmin = false;
   isFormChanged = false;
+  LocationForm = false;
+  isSuccess = false;
+
+  selectedCountry: any = null;
+  selectedProvince: any = null;
+  selectedDistrict: any = null;
 
   // for Object
-  accountEdit: Account = {
-    username: '',
-    password: '',
-    fname: '',
-    lname: '',
-    gender: '',
-    description: '',
-  };
+
   accountOriginal: any;
 
-  country: Country = {};
+  location: AddressLocation = {
+    country: null,
+    province: null,
+    district: null,
+    // idaccount: this.account.data.idaccount,
+  };
+
+  country?: Country[] | null;
+  province?: Province[] | null;
+  district?: District[] | null;
 
   ngOnInit() {
     const userId = this.route.snapshot.paramMap.get('id');
@@ -46,7 +61,6 @@ export class ProfileComponent implements OnInit {
       .get<AccountResponse>(`http://localhost:8080/accounts/${userId}`)
       .subscribe({
         next: (res) => {
-          console.log('account', res);
           this.account = res;
           this.accountOriginal = JSON.parse(JSON.stringify(res.data));
           if (res.data.pathpicture) {
@@ -74,19 +88,44 @@ export class ProfileComponent implements OnInit {
                 }
               });
           }
-          console.log('account -> {}', this.account);
+
+          // if (
+          //   this.account.data.country != null &&
+          //   this.account.data.province != null &&
+          //   this.account.data.district != null
+          // ) {
+          //   this.selectedCountry = this.account.data.country;
+          //   this.selectedProvince = this.account.data.province;
+          //   this.selectedDistrict = this.account.data.district;
+          // } else {
+          this.getCountry();
+          // }
         },
         error: () => alert('ดึงข้อมูลไ่ม่สำเร็จ'),
       });
     if (localStorage.getItem('userRole') === 'admin') {
       this.isAdmin = true;
     }
-
-    this.getCountry();
   }
 
   getCountry() {
-    // this.country = AccountService.getCountry();
+    console.log('[start] getCountry');
+
+    this.accountService.findlocation(this.location).subscribe({
+      next: (res: ResponseApi) => {
+        this.country = res.data as Country[];
+
+        console.log('[success] getCountry');
+        this.country.forEach((country) => {
+          console.log(' -', country.name);
+        });
+      },
+      error: (err) => {
+        console.error('[error] getCountry', err);
+      },
+    });
+
+    console.log('[end] getCountry');
   }
 
   onFileSelected(event: any) {
@@ -207,6 +246,93 @@ export class ProfileComponent implements OnInit {
   logout(): void {
     localStorage.removeItem('isLoggedIn');
     window.location.href = '/login';
+  }
+
+  LocationModel() {
+    console.log('[ก่อนกด] LocationForm =', this.LocationForm);
+    this.LocationForm = true;
+    console.log('[หลังกด] LocationForm =', this.LocationForm);
+  }
+
+  onCountryChange() {
+    if (!this.selectedCountry) return;
+
+    this.location.country = this.selectedCountry;
+    this.location.province = null;
+    this.location.district = null;
+    this.province = null;
+    this.district = null;
+
+    this.accountService.findlocation(this.location).subscribe({
+      next: (res: ResponseApi) => {
+        this.province = res.data as Province[];
+
+        console.log('[success] Province');
+        this.province.forEach((province) => {
+          console.log(' -', province.name);
+        });
+      },
+      error: (err) => {
+        console.error('[error] getCountry', err);
+      },
+    });
+  }
+
+  onProvinceChange() {
+    if (!this.selectedProvince) return;
+    this.location.district = null;
+
+    this.location.province = this.selectedProvince;
+
+    this.accountService.findlocation(this.location).subscribe({
+      next: (res: ResponseApi) => {
+        this.district = res.data as District[];
+
+        console.log('[success] District');
+        this.district.forEach((district) => {
+          console.log(' -', district.name);
+        });
+      },
+      error: (err) => {
+        console.error('[error] getCountry', err);
+      },
+    });
+  }
+
+  onDistrictChange() {
+    if (!this.selectedProvince) return;
+    this.location.district = this.selectedDistrict;
+  }
+
+  resetLocationFields() {
+    this.selectedCountry = null;
+    this.selectedProvince = null;
+    this.selectedDistrict = null;
+    this.location.country = null;
+    this.location.province = null;
+    this.location.district = null;
+  }
+
+  SubmitLocation() {
+    this.location.idaccount = this.account.data.idaccount;
+    console.log('location', this.location);
+    this.accountService.postlocation(this.location).subscribe({
+      next: (res: ResponseApi) => {
+        console.log('✅ บันทึกสำเร็จ', res);
+        this.LocationForm = false; // ปิดฟอร์ม popup ถ้าต้องการ
+
+        if (res.meassage == 'บันทุกข้อมูลเเง้ว') {
+          this.isSuccess = true;
+        }
+      },
+      error: (err) => {
+        console.error('[error] getCountry', err);
+      },
+    });
+  }
+
+  closePopup() {
+    this.isSuccess = false;
   }
 }
 interface AccountResponse {
