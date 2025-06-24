@@ -98,4 +98,9 @@
     <h3>❌ Username หรือ Password ไม่ถูกต้อง</h3>
     <button (click)="closeAlert()">ลองใหม่</button>
   </div>
+
+  <div *ngIf="loginSuccess" class="login-alert success">
+    <h3>✅ เข้าสู่ระบบสำเร็จ</h3>
+    <button (click)="closeAlert()">ปิด</button>
+  </div>
 </div>

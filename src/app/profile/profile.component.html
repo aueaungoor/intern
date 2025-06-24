@@ -19,7 +19,7 @@
       </div>
 
       <button
-        *ngIf="isAdmin"
+        *ngIf="isAdmin && !account.data?.isAdmin"
         type="button"
         class="delete-btn"
         (click)="deleteAccount()"

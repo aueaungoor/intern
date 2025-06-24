@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AccountResponse } from '../../../model-response/accountResponse';
@@ -25,7 +25,8 @@ export class LoginComponent {
     private fb: FormBuilder,
     public router: Router,
     private accountService: AccountService,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {
     this.loginForm = this.fb.group({
       username: [''],
@@ -49,26 +50,21 @@ export class LoginComponent {
         next: (response) => {
           console.log('✅ Login success:', response);
 
-          if (response.message == 'ดึงข้อมูลสำเร็จ') {
+          if (response.message === 'ดึงข้อมูลสำเร็จ') {
             localStorage.setItem('isLoggedIn', 'true');
+            this.loginSuccess = true;
 
-            if (response.data.isAdmin == true) {
-              this.router.navigate(['/mainpage']).then(() => {
-                setTimeout(() => {
-                  this.loginFailed = false;
-                }, 1000);
+            this.cdr.detectChanges(); // 👉 บังคับให้ Angular รีเฟรช view ทันที
+
+            setTimeout(() => {
+              if (response.data.isAdmin === true) {
                 localStorage.setItem('userRole', 'admin');
-              });
-            } else {
-              this.router
-                .navigate(['/profile', response.data.idaccount])
-                .then(() => {
-                  setTimeout(() => {
-                    this.loginFailed = false;
-                  }, 1000);
-                  localStorage.setItem('userRole', 'user');
-                });
-            }
+                this.router.navigate(['/mainpage']);
+              } else {
+                localStorage.setItem('userRole', 'user');
+                this.router.navigate(['/profile', response.data.idaccount]);
+              }
+            }, 1500); // ให้ผู้ใช้เห็น alert 1.5 วิ
           } else {
             this.loginFailed = true;
           }

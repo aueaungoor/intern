@@ -1,15 +1,40 @@
-<h2>📁 เลือกโฟลเดอร์ แล้วยิง GET</h2>
-<button class="back-btn" (click)="goToMainPage()">
+<div class="form-container">
+  <h2>📁 เลือกโฟลเดอร์ แล้วยิง GET</h2>
+
+  <button class="back-btn" (click)="goToMainPage()">
     🔙 กลับหน้า MainPage
   </button>
-<input type="file" webkitdirectory (change)="onFolderSelect($event)" /><br/><br/>
 
-<form (submit)="submitZip(); $event.preventDefault()">
-  <label>📁 Path ที่ได้จากโฟลเดอร์:</label><br />
-  <input type="text" [(ngModel)]="sourceFolder" name="sourceFolder" required /><br/><br/>
+  <input
+    type="file"
+    webkitdirectory
+    (change)="onFolderSelect($event)"
+    class="input-file"
+  /><br /><br />
 
-  <label>📦 ชื่อ ZIP:</label><br />
-  <input type="text" [(ngModel)]="zipName" name="zipName" required /><br/><br/>
+  <form (submit)="submitZip(); $event.preventDefault()">
+    <div class="form-group">
+      <label for="sourceFolder">📁 Path ที่ได้จากโฟลเดอร์:</label>
+      <input
+        type="text"
+        id="sourceFolder"
+        [(ngModel)]="sourceFolder"
+        name="sourceFolder"
+        required
+      />
+    </div>
 
-  <button type="submit">🚀 สร้าง ZIP</button>
-</form>
+    <div class="form-group">
+      <label for="zipName">📦 ชื่อ ZIP:</label>
+      <input
+        type="text"
+        id="zipName"
+        [(ngModel)]="zipName"
+        name="zipName"
+        required
+      />
+    </div>
+
+    <button type="submit" class="submit-btn">🚀 สร้าง ZIP</button>
+  </form>
+</div>

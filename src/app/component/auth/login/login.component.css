@@ -226,3 +226,40 @@ body {
   background-color: #7e22ce;
 }
 
+.login-alert.success {
+  background-color: #e6ffe6;
+  color: #2d662d;
+  border: 1px solid #a5d6a7;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.login-alert.success h3 {
+  margin: 0 0 15px 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.login-alert.success button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.login-alert.success button:hover {
+  background-color: #43a047;
+}
+
+
+
+

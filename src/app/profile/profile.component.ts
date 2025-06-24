@@ -88,18 +88,21 @@ export class ProfileComponent implements OnInit {
                 }
               });
           }
-
-          // if (
-          //   this.account.data.country != null &&
-          //   this.account.data.province != null &&
-          //   this.account.data.district != null
-          // ) {
-          //   this.selectedCountry = this.account.data.country;
-          //   this.selectedProvince = this.account.data.province;
-          //   this.selectedDistrict = this.account.data.district;
-          // } else {
-          this.getCountry();
-          // }
+          if (
+            this.account.data.country != null &&
+            this.account.data.province != null &&
+            this.account.data.district != null &&
+            this.country &&
+            this.province &&
+            this.district
+          ) {
+            console.log('tset');
+            this.country[1].name = this.account.data.country;
+            this.province[1].name = this.account.data.province;
+            this.district[1].name = this.account.data.district;
+          } else {
+            this.getCountry();
+          }
         },
         error: () => alert('ดึงข้อมูลไ่ม่สำเร็จ'),
       });
